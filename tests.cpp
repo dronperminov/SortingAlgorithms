@@ -1,5 +1,6 @@
 #include <iostream>
 #include <iomanip>
+#include <chrono>
 
 #include "BitonicSort.hpp"
 #include "CountingSort.hpp"
@@ -22,6 +23,7 @@
 #include "CycleSort.hpp"
 
 using namespace std;
+using namespace std::chrono;
 
 const int DIRECT = 0;
 const int REVERSE = 1;
@@ -56,9 +58,13 @@ bool test(void (*sort)(int*, int), int n, int type) {
 			array[i] = numbers[index];
 			numbers[index] = 0;
 		}
+
+		delete[] numbers;
 	}
 
+	high_resolution_clock::time_point t0 = high_resolution_clock::now();
 	sort(array, n); // сортируем массив
+	high_resolution_clock::time_point t1 = high_resolution_clock::now();
 
 	// проверяем массив на отсортированность
 	for (int i = 0; i < n; i++)
@@ -66,6 +72,20 @@ bool test(void (*sort)(int*, int), int n, int type) {
 			return false;
 	
 	delete[] array;
+
+	double dt = (duration_cast<chrono::microseconds>(t1 - t0)).count();
+
+	cout << right << setw(7);
+
+	if (dt < 1000) {
+		cout << dt << " us ";
+	}
+	else if (dt < 1000000) {
+		cout << (dt / 1000.0) << " ms ";
+	}
+	else {
+		cout << (dt / 1000000) << " s ";
+	}
 
 	return true;
 }
