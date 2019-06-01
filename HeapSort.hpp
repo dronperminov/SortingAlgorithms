@@ -4,41 +4,38 @@
 // Временная сложность: O(n log n)
 // Пространственная сложность: O(1)
 
-void DownHeap(int *array, int k, int n) {
-	int maxN = k;
-	int value = array[k];
+void Heapify(int *array, int n, int i) {
+	int largest = i;
+	
+	while (true) {
+		int left = 2 * i + 1;
+		int right = 2 * i + 2;
 
-	while (1) {
-		int childN = 2 * k + 1;
+		if (left < n && array[left] > array[largest])
+			largest = left;
 
-		if (childN < n && array[childN] > value) 
-			maxN = childN;
+		if (right < n && array[right] > array[largest])
+			largest = right;
 
-		childN++;
+		if (largest == i)
+			return;
 
-		if (childN < n && array[childN] > array[maxN])
-            maxN = childN;
-
-        if (maxN == k)
-        	break;
-
-        array[k] = array[maxN];
-        array[maxN] = value; 
-        k = maxN;
+		int tmp = array[i];
+		array[i] = array[largest];
+		array[largest] = tmp;
+		i = largest;
 	}
 }
 
 void HeapSort(int* array, int n) {
 	for (int i = n / 2 - 1; i >= 0; i--)
-		DownHeap(array, i, n);
+		Heapify(array, n, i);
 
-	while (n > 1) {
-		n--;
-
+	for (int i = n - 1; i >= 0; i--) {
 		int tmp = array[0];
-		array[0] = array[n];
-		array[n] = tmp;
+		array[0] = array[i];
+		array[i] = tmp;
 
-		DownHeap(array, 0, n);
+		Heapify(array, i, 0);
 	}
 }
